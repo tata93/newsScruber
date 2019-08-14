@@ -37,17 +37,21 @@ public class NewsImpl implements  News{
             d = Jsoup.parse(element.html());
             String imageElement="No Img";
             if (!d.select(imgType).toString().equals("")){
-                imageElement = d.select(imgType).stream().findAny().get().attr("src").toString();
+                imageElement = d.select(imgType).stream().findAny().get().attr("src");
             }
             Element elementLink =d.select("a[href~="+href+"]").stream().findAny().filter(s->s.hasParent()).get();
-            String elementTime =d.select(time).stream().findAny().filter(s->s.hasParent()).get().text();
-            NewLenta newLenta = new NewLenta(elementLink.text(),elementLink.attr("href").toString(),imageElement,elementTime);
+            String elementTime="No Time";
+            if (!d.select(time).toString().equals("")){
+                elementTime= d.select(time).stream().findAny().get().text();
+            }
+            NewLenta newLenta = new NewLenta(elementLink.text(),elementLink.attr("href"),imageElement,elementTime);
             newLentas.add(newLenta);
         }
         return newLentas;
     }
 
     @Override
+    @Transactional
     public void registrateNewsSource(String uri, String type, Boolean rss, String imgType, String href,String time) throws IOException {
         List<NewLenta> newLentas;
         if (!rss){
@@ -55,6 +59,7 @@ public class NewsImpl implements  News{
             newLentas.stream().forEach(s->newsRepository.save(s));
         } else {
             newLentas=agregateNewsFromRss(uri);
+            newLentas.stream().forEach(s->newsRepository.save(s));
         }
         NewsSource newsSource = new NewsSource(uri,rss,type,imgType,href,time,newLentas);
         newsSourceRepository.save(newsSource);
@@ -64,7 +69,6 @@ public class NewsImpl implements  News{
     @Transactional
     public List<NewLenta> agregateNewsFromRss(String uri) throws IOException {
         Document document = Jsoup.connect(uri).get();
-        Document d = Jsoup.parse(document.html());
         List<Element> e =document.getElementsByTag("item").stream().collect(Collectors.toList());
         List<NewLenta> newLentas = new ArrayList<>();
         for (Element element : e){

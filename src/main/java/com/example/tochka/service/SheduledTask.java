@@ -5,17 +5,12 @@ import com.example.tochka.domain.NewsSource;
 import com.example.tochka.repository.NewsRepository;
 import com.example.tochka.repository.NewsSourceRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,9 +31,9 @@ public class SheduledTask {
     public void reportCurrentTime() throws IOException {
         List<NewsSource> newsSourceList = newsSourceRepository.findAll();
         for (NewsSource newsSource : newsSourceList){
-            List<NewLenta> newLentas = new ArrayList<>();
+            List<NewLenta> newLentas;
             List<NewLenta> newLentasFromData = newsSource.getNewLentas().stream().collect(Collectors.toList());
-            if(newsSource.getRss()){
+            if(!newsSource.getRss()){
                 newLentas =news.agregateNews(newsSource.getUri(), newsSource.getType(),newsSource.getImgType(),newsSource.getHref(),newsSource.getTime());
             } else {
                 newLentas =news.agregateNewsFromRss(newsSource.getUri());

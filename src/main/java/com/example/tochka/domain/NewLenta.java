@@ -1,9 +1,7 @@
 package com.example.tochka.domain;
 
-import lombok.Data;
 import lombok.Getter;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
