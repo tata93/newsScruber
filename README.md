@@ -23,7 +23,8 @@ https://news.yandex.ru/
   "type":"td.stories-set__item",
   "href":"/story/(.*)",
   "time":"div.story__date",
-  "imgType":"img.image"
+  "imgType":"img.image",
+  "rss":false
 }
 
 https://lenta.ru/rss/news
@@ -41,3 +42,4 @@ type - корневой элемент, содержащий всю новост
 href - ссылка на конкретную ность(можно задавать с помощью regex)
 time- элемент, содержащий время публикации новоти
 imgType - элемент, содержащий ссылку  на картинку новости, есл он есть
+
